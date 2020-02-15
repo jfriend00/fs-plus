@@ -1,0 +1,14 @@
+{
+  "name": "listfiles",
+  "version": "1.0.0",
+  "description": "List files, directories, recursively with various filtering options",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "author": "John Friend",
+  "license": "ISC",
+  "engines" : {
+      "node": ">=10.0"
+  }
+}
