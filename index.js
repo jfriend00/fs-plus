@@ -50,6 +50,7 @@ options interface:
 
 const fsp = require('fs').promises;
 const path = require('path');
+const FsArray = require('./fs-array.js');
 
 // internal function we call for recursion that doesn't have to do some default setup
 async function list(dir, options) {
@@ -156,7 +157,7 @@ async function list(dir, options) {
 
 // Idea: maybe offer an async iterator, but maybe don't really need it
 
-function listFiles(dir, opts = {}) {
+function fsList(dir, opts = {}) {
     // initialization here that does not need to be done on recursive calls
     
     // make copy of options object and initialize defaults
@@ -166,7 +167,6 @@ function listFiles(dir, opts = {}) {
         matchWhat: "ext", 
         types: "both", 
         resultType: "object", 
-        results: []
     };
     if (typeof opts.match === "string") {
         defaults.matchCaseInsensitive = true;
@@ -176,6 +176,11 @@ function listFiles(dir, opts = {}) {
         }
     }
     const options = Object.assign(defaults, opts);
+    // if resultType is "object", then results go in a FsArray, otherwise in a plain array
+    if (!options.results) {
+        options.results = options.resultType === "object" ? new FsArray() : [];
+    }
+        
     
     if (typeof options.match === "object" && !(options.match instanceof RegExp)) {
         throw new TypeError("If options.match is an object it must be a RegExp object");
@@ -193,6 +198,6 @@ function listFiles(dir, opts = {}) {
     return list(src, options);
 }
 
-module.exports = listFiles;
+module.exports = {fsList};
 
 

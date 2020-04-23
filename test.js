@@ -1,4 +1,4 @@
-const listFiles = require("./index.js");
+const {fsList} = require("./index.js");
 const fsp = require('fs').promises;
 const path = require('path');
 
@@ -76,7 +76,7 @@ async function run() {
     });
     
     console.log("\nall files");
-    await listFiles(testDir, {
+    await fsList(testDir, {
         resultType: "fullPath", recurse: true
     }).then(results => {
        console.log(results);
@@ -85,7 +85,7 @@ async function run() {
     });
     
     console.log(`\nmatch: "TXT1", matchCaseInsensitive: true`);
-    await listFiles(testDir, {
+    await fsList(testDir, {
         resultType: "fullPath", recurse: true, match: "TXT1", matchCaseInsensitive: true
     }).then(results => {
        console.log(results);
@@ -94,7 +94,7 @@ async function run() {
     });
     
     console.log(`\nmatch: /^txt/`);
-    await listFiles(testDir, {
+    await fsList(testDir, {
         resultType: "fullPath", recurse: true, match: /^txt/
     }).then(results => {
        console.log(results);
@@ -103,7 +103,7 @@ async function run() {
     });
     
     console.log(`\nmatchWhat:"base", match:"fff"`);
-    await listFiles(testDir, {
+    await fsList(testDir, {
         resultType: "fullPath", recurse: true, matchWhat: "base", match: "fff"
     }).then(results => {
        console.log(results);
@@ -112,7 +112,7 @@ async function run() {
     });
     
     console.log(`\nmatchWhat:"file", match:"ggg.txt1"`);
-    await listFiles(testDir, {
+    await fsList(testDir, {
         resultType: "fullPath", recurse: true, matchWhat: "file", match: "ggg.txt1"
     }).then(results => {
        console.log(results);
@@ -121,7 +121,7 @@ async function run() {
     });
     
     console.log(`\nmatch: function() { base name is 3 bytes long and ext ends with "1"}`);
-    await listFiles(testDir, {
+    await fsList(testDir, {
         resultType: "fullPath", recurse: true, match: (info) => {
             return info.basename.length === 3 && info.ext.endsWith("1");
         }
@@ -132,7 +132,7 @@ async function run() {
     });
 
     console.log(`\ntypes: "dirs"`);
-    await listFiles(testDir, {
+    await fsList(testDir, {
         resultType: "fullPath", recurse: true, types: "dirs"
     }).then(results => {
        console.log(results);
@@ -141,7 +141,7 @@ async function run() {
     });
     
     console.log(`\ntypes: "files"`);
-    await listFiles(testDir, {
+    await fsList(testDir, {
         resultType: "fullPath", recurse: true, types: "files"
     }).then(results => {
        console.log(results);
@@ -150,7 +150,7 @@ async function run() {
     });
     
     console.log(`\ntypes: "files", recurse function "subDir2"`);
-    await listFiles(testDir, {
+    await fsList(testDir, {
         resultType: "fullPath", types: "files", recurse: (info) => {
             return info.filename.endsWith("2");
         }
@@ -161,7 +161,7 @@ async function run() {
     });
     
     console.log(`\ntypes: "files", skipTopLevelFiles: true, recurse function "subDir2"`);
-    await listFiles(testDir, {
+    await fsList(testDir, {
         resultType: "fullPath", types: "files", skipTopLevelFiles: true, recurse: (info) => {
             return info.filename.endsWith("2");
         }
