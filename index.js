@@ -1,6 +1,6 @@
 /*
 Requires node v10.0+  (fs.promises interface)
-listFiles(dir, opts = {})
+fsList(dir, opts = {})
 options interface:
 
    matchWhat: "ext"|"base"|"file" (defaults to "ext")
@@ -17,7 +17,7 @@ options interface:
             promise rejecting aborts the whole process
    matchCaseInsensitive: true|false (defaults to true)
         Only applies when match is a string
-   
+
    recurse: true|false|function   (defaults to false)
        true is recurse into sub-directories
        false is no recurse
@@ -27,22 +27,22 @@ options interface:
            callback({filename, basename, ext, fullPath, type})
            can return a promise that will be awaited to resolve to true|false
            promise rejecting aborts the whole process
-   
-   types: "files"|"dirs"|"both"   (defaults to "both")
+
+   types: "files"|"dirs"|"both"   (defaults to "files")
        files is return only files (skip directories)
        dirs is return only directories (skip files)
        both is to return both files and directories
-   
-   resultType: "object"|"fullPath"   (defaults to "object")
+
+   resultType: "object"|"names"   (defaults to "names")
        object is array of {filename, basename, ext, fullPath, type} objects
        fulLPath is array of fullPath strings
-       
+
    skipTopLevelFiles: true|false    (defaults to false)
        only process directories on the top level, skip top level files
-       
-   If you just call listFiles(someDir) with no options, it just gets you 
+
+   If you just call listFiles(someDir) with no options, it just gets you
    and array of all the files and directories in object form: {filename, basename, ext, fullPath, type}
-   
+
    You add match options to limit what it returns
    You add the type option to limit it to only files or directories
 
@@ -159,14 +159,14 @@ async function list(dir, options) {
 
 function fsList(dir, opts = {}) {
     // initialization here that does not need to be done on recursive calls
-    
+
     // make copy of options object and initialize defaults
     // we put results array in the options so it can be passed into the recursive calls and
     //    they can just add to the same array rather than having to merge arrays
     let defaults = {
-        matchWhat: "ext", 
-        types: "both", 
-        resultType: "object", 
+        matchWhat: "ext",
+        types: "files",
+        resultType: "names",
     };
     if (typeof opts.match === "string") {
         defaults.matchCaseInsensitive = true;
@@ -180,8 +180,8 @@ function fsList(dir, opts = {}) {
     if (!options.results) {
         options.results = options.resultType === "object" ? new FsArray() : [];
     }
-        
-    
+
+
     if (typeof options.match === "object" && !(options.match instanceof RegExp)) {
         throw new TypeError("If options.match is an object it must be a RegExp object");
     }
@@ -199,5 +199,3 @@ function fsList(dir, opts = {}) {
 }
 
 module.exports = {fsList};
-
-
