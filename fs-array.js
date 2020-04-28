@@ -21,7 +21,7 @@ class FsArray extends Array {
             console.log(f);
         }
     }
-    
+
     // iterator that iterates just the fullPath filename, whether this is
     // an array of objects or an array of filenames
     // options:
@@ -54,11 +54,11 @@ class FsArray extends Array {
             }
         };
     }
-    
+
     // options takes:
     //     copyFlags (flags from fsPromises.copyFile())
     //     deleteCopiesUponFail: true | false     (defaults to true)
-    // 
+    //
     // destDir will be created if it does not already exist
     // copy operation ignores directories
     async copy(destDir, opts = {}) {
@@ -78,10 +78,12 @@ class FsArray extends Array {
             throw e;
         }
     }
-    
+
     // move moves the list of files to the target directory
     //    It stops upon first error
     //    destDir will be created if it does not already exist
+    // does not currently handle multiple levels (doesn't create directories other than the top level directory)
+    // does not handle destDir on another volume/drive
     async move(destDir) {
         await mkdirp(destDir);
         for (const fullPath of this.fullPaths({types: "files"})) {
@@ -89,7 +91,7 @@ class FsArray extends Array {
             await fsp.rename(fullPath, destFile);
         }
     }
-    
+
     // cleanup deletes the list of files
     // options:
     //    outcome: "resolve" | "natural" | Error Object

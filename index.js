@@ -7,7 +7,7 @@ options interface:
        "ext" means you're matching file extensions (without leading ".")  such as "jpeg"
        "base" means you're matching the base filename without the extension and without the path such as "results"
        "file" means you're matching the base filename and extension  such as "results.jpeg"
-   match: string|regex|function
+   match: string|regex|function  (defaults to empty which matches everything)
         string means you're looking for an exact match with matchWhat setting
         regex is a regex that will be applied to the matchWhat setting
         function is a custom callback function - callback({filename, basename, ext, fullPath, type})
@@ -33,18 +33,23 @@ options interface:
        dirs is return only directories (skip files)
        both is to return both files and directories
 
-   resultType: "object"|"names"   (defaults to "names")
-       object is array of {filename, basename, ext, fullPath, type} objects
+   resultType: "objects"|"names"   (defaults to "names")
+       objects is array of {filename, basename, ext, fullPath, type} objects
        fulLPath is array of fullPath strings
 
    skipTopLevelFiles: true|false    (defaults to false)
        only process directories on the top level, skip top level files
 
+   results (optional)
+       If you pass an array into options.results, then this function call will add items to that array
+       If you don't pass an array, a new array will be created
+       The populated array will be the resolved value of the promise that is returned
+
    If you just call listFiles(someDir) with no options, it just gets you
-   and array of all the files and directories in object form: {filename, basename, ext, fullPath, type}
+   and array of all the full path filenames in an array
 
    You add match options to limit what it returns
-   You add the type option to limit it to only files or directories
+   You add the type option to limit it to only files or directories or specify you want both
 
 */
 
@@ -133,7 +138,7 @@ async function list(dir, options) {
         }
 
         // passed all the tests, add the summary object to the results
-        if (options.resultType === "object") {
+        if (options.resultType === "objects") {
             options.results.push(obj);
         } else {
             options.results.push(fullPath);
@@ -178,7 +183,7 @@ function fsList(dir, opts = {}) {
     const options = Object.assign(defaults, opts);
     // if resultType is "object", then results go in a FsArray, otherwise in a plain array
     if (!options.results) {
-        options.results = options.resultType === "object" ? new FsArray() : [];
+        options.results = options.resultType === "objects" ? new FsArray() : [];
     }
 
 
